@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Inisialisasi Firebase Admin
-const serviceAccount = require('./serviceAccountKeys.json');
+const serviceAccount = require('D:/nodejs/serviceAccountKeys.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -22,21 +22,22 @@ app.get('/', (req, res) => {
 
 // Contoh route POST untuk menambah data
 
-app.post('/user', async (req, res) => {
+app.post('/task', async (req, res) => {
   try {
-    const { email, password, userId, userName } = req.body;
+    const { category, dueDate, taskId, title, userId } = req.body;
 
-    const docRef = await db.collection('user').add({
-      email,
-      password,
-      userId,
-      userName
+    const taskRef = await db.collection('task').add({
+      category,
+      dueDate,
+      taskId,
+      title,
+      userId
     });
 
-    return res.status(201).json({ message: 'User added', id: docRef.id });
+    return res.status(201).json({ message: 'task added', id: taskRef.id });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
+    return res.status(500).json({ error: error.message });
+}
 });
 
 
