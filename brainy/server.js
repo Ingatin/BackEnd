@@ -1,45 +1,37 @@
 const express = require('express');
 const admin = require('firebase-admin');
+const path = require('path');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Inisialisasi Firebase Admin
-const serviceAccount = require('D:/nodejs/serviceAccountKeys.json');
+const serviceAccount = require(path.join(__dirname, 'serviceAccountKeys.json'));
+
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential : admin.credential.cert('./serviceAccountKeys.json')
 });
 
+// Export db untuk digunakan di controller lain
 const db = admin.firestore();
+module.exports.db = db;
 
-// Middleware
+// Middleware JSON parser
 app.use(express.json());
 
-// Contoh route GET
+// Route contoh (bisa dihapus kalau sudah pakai router utama)
 app.get('/', (req, res) => {
   res.send('Server berjalan dengan Firestore');
 });
 
-// Contoh route POST untuk menambah data
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
-app.post('/task', async (req, res) => {
-  try {
-    const { category, dueDate, taskId, title, userId } = req.body;
-
-    const taskRef = await db.collection('task').add({
-      category,
-      dueDate,
-      taskId,
-      title,
-      userId
-    });
-
-    return res.status(201).json({ message: 'task added', id: taskRef.id });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-}
-});
-
+// Gunakan routes
+app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Start server
 app.listen(PORT, () => {
