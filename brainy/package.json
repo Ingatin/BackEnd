@@ -1,10 +1,11 @@
 {
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "firebase-admin": "^13.3.0",
-    "nanoid": "^5.1.5"
+    "nanoid": "^3.3.11"
   },
   "name": "brainy",
   "version": "1.0.0",
